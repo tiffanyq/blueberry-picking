@@ -1,0 +1,105 @@
+html,
+body {
+    background-color: white;
+    background-image:
+        linear-gradient(rgba(255, 221, 229, 0.5), rgba(238, 238, 255, 0.7)),
+        url("blueberry_skies.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    font-family: 'Times New Roman', 'Times', serif;
+    font-style: italic;
+    margin: 0;
+    overflow: hidden;
+}
+
+#bucket-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 90vw;
+    pointer-events: none;
+}
+
+#pounds-picked {
+    font-size: 20px;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+#bucket-wrap {
+    position: relative;
+}
+
+#bucket {
+    display: block;
+    max-height: 60vh;
+    max-width: 90vw;
+    opacity: 0.8;
+}
+
+/* Anchored at bottom-center, so a berry's bottom edge sits at its top % */
+.blueberry {
+    position: absolute;
+    transform: translate(-50%, -100%);
+    font-size: 28px;
+    line-height: 1;
+    font-style: normal;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none; /* mobile */
+    pointer-events: auto;
+}
+
+.blueberry.picked {
+    transition: transform 0.2s linear, opacity 0.2s ease-in;
+    pointer-events: none;
+}
+
+.blueberry.dragging {
+    cursor: grabbing;
+    z-index: 1;
+}
+
+#forever {
+    position: fixed;
+    top: 32px;
+    left: 0;
+    right: 0;
+    padding: 0 16px;
+    text-align: center;
+    pointer-events: none;
+}
+
+#sound {
+    position: fixed;
+    top: 8px;
+    right: 16px;
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+footer {
+    position: fixed;
+    bottom: 32px;
+    left: 0;
+    right: 0;
+    padding: 0 16px;
+    text-align: center;
+    font-size: 16px;
+}
+
+#sound, footer, #forever {
+    letter-spacing: 1.6px;
+}
