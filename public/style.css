@@ -67,6 +67,19 @@ body {
     z-index: 1;
 }
 
+/* Other people's cursors */
+.cursor {
+    position: fixed;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    font-style: normal;
+    /* Hearts sit on top of everything but never block grabbing a berry */
+    pointer-events: none;
+    z-index: 10;
+    /* Smooths out the gaps between updates */
+    transition: left 0.05s linear, top 0.05s linear;
+}
+
 #forever {
     position: fixed;
     top: 32px;

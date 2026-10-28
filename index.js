@@ -84,9 +84,21 @@ async function start() {
       });
     });
 
+    // Pass this person's cursor on to everyone else, tagged with who it's from
+    socket.on('cursor', (data) => {
+      socket.broadcast.emit('cursor', {
+        id: socket.id,
+        x: data.x,
+        y: data.y,
+        emoji: data.emoji
+      });
+    });
+
   //Listen for this client to disconnect
   socket.on("disconnect", () => {
     console.log("A client has disconnected: " + socket.id);
+    // Remove their heart from everyone's screen
+    io.emit('cursor-leave', socket.id);
   });
 });
 }

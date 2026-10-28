@@ -200,6 +200,9 @@ function resetBerry(berry) {
 socket.on('init', (data) => {
   // start berries fresh
   bucketWrap.querySelectorAll('.blueberry').forEach((b) => b.remove());
+  // After a reconnect, also reset hearts
+  Object.values(otherCursors).forEach((heart) => heart.remove());
+  Object.keys(otherCursors).forEach((id) => delete otherCursors[id]);
   data.berries.forEach(addBlueberry);
   showWeight(data.weight);
 });
@@ -210,6 +213,51 @@ socket.on('picked', (data) => {
   if (old && !old.classList.contains('picked')) old.remove();
   addBlueberry(data.newBerry);
   showWeight(data.weight);
+});
+
+// Cursors
+// Send at most every 50ms; pointermove can fire 100+ times a second
+const CURSOR_SEND_INTERVAL = 50;
+let lastCursorSend = 0;
+const bucketImg = document.getElementById('bucket');
+
+// Fires while hovering, holding the button down, and dragging (even while a berry has captured the pointer)
+window.addEventListener('pointermove', (e) => {
+  const now = Date.now();
+  if (now - lastCursorSend < CURSOR_SEND_INTERVAL) return;
+  lastCursorSend = now;
+
+  // Position as a fraction of the bucket image, like the berries, so it lines up on every screen size
+  const rect = bucketImg.getBoundingClientRect();
+  socket.emit('cursor', {
+    x: (e.clientX - rect.left) / rect.width,
+    y: (e.clientY - rect.top) / rect.height,
+    emoji: myCursorEmoji
+  });
+});
+
+const otherCursors = {};
+
+socket.on('cursor', (data) => {
+  let heart = otherCursors[data.id];
+  if (!heart) {
+    heart = document.createElement('div');
+    heart.className = 'cursor';
+    heart.textContent = data.emoji;
+    heart.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(heart);
+    otherCursors[data.id] = heart;
+  }
+  const rect = bucketImg.getBoundingClientRect();
+  heart.style.left = (rect.left + data.x * rect.width) + 'px';
+  heart.style.top = (rect.top + data.y * rect.height) + 'px';
+});
+
+socket.on('cursor-leave', (id) => {
+  if (otherCursors[id]) {
+    otherCursors[id].remove();
+    delete otherCursors[id];
+  }
 });
 
 // Sound
